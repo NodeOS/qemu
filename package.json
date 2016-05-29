@@ -1,0 +1,48 @@
+{
+  "name": "qemu",
+  "version": "2.6.0",
+  "description": "QEmu as a npm package for NodeOS",
+  "bin": {
+    "ivshmem-client": "bin/ivshmem-client",
+    "ivshmem-server": "bin/ivshmem-server",
+    "qemu-arm": "bin/qemu-arm",
+    "qemu-ga": "bin/qemu-ga",
+    "qemu-i386": "bin/qemu-i386",
+    "qemu-img": "bin/qemu-img",
+    "qemu-io": "bin/qemu-io",
+    "qemu-nbd": "bin/qemu-nbd",
+    "qemu-system-arm": "bin/qemu-system-arm",
+    "qemu-system-i386": "bin/qemu-system-i386",
+    "qemu-system-x86_64": "bin/qemu-system-x86_64",
+    "qemu-x86_64": "bin/qemu-x86_64"
+  },
+  "main": "index.js",
+  "scripts": {
+    "BigRedButton": "scripts/BigRedButton",
+    "build": "scripts/build",
+    "install": "prebuild-install -d https://github.com/NodeOS/qemu/releases/download/v{version}/{platform}-{arch}.tar.gz || npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NodeOS/qemu.git"
+  },
+  "keywords": [
+    "emulator",
+    "x86",
+    "i386",
+    "x86_64",
+    "arm"
+  ],
+  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NodeOS/qemu/issues"
+  },
+  "homepage": "https://github.com/NodeOS/qemu#readme",
+  "dependencies": {
+    "prebuild-install": "^1.0.2"
+  },
+  "devDependencies": {
+    "prebuild": "^4.2.1"
+  }
+}

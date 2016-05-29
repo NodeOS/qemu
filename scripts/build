@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+
+TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu,arm-linux-user,i386-linux-user,x86_64-linux-user
+
+QEMU_VERSION=`node -p "require('./package.json').version"`
+
+QEMU_URL=http://wiki.qemu-project.org/download/qemu-$QEMU_VERSION.tar.bz2
+
+SRC_DIR=`pwd`/deps/qemu
+
+
+if [[ -z $JOBS ]]; then
+  JOBS=$((`getconf _NPROCESSORS_ONLN` + 1))
+fi
+
+if [[ -z $MACHINE ]]; then
+  MACHINE=`uname -m`
+fi
+case $MACHINE in
+  i[345678]86)
+    ARCH=ia32
+    CC="$CC -m32"
+  ;;
+
+  x86_64)
+    ARCH=x64
+    CC="$CC -m64"
+  ;;
+
+  *)
+    echo Unknown MACHINE "$MACHINE"
+    exit 1
+  ;;
+esac
+
+
+OS="`uname`"
+case $OS in
+  'Linux')     PLATFORM=linux   ;;
+  'FreeBSD')   PLATFORM=freebsd ;;
+  'WindowsNT') PLATFORM=win     ;;
+  'Darwin')    PLATFORM=mac     ;;
+  'SunOS')     PLATFORM=solaris ;;
+  'AIX')       PLATFORM=linux   ;;
+
+  *)
+    echo Unknown OS "$OS"
+    exit 2
+  ;;
+esac
+
+
+# Clean object dir and return the input error
+function err(){
+  rm -rf $OBJ_DIR
+  rmdir -p --ignore-fail-on-non-empty `dirname $OBJ_DIR`
+  exit $1
+}
+
+
+#
+# Download QEmu
+#
+
+OBJ_DIR=$SRC_DIR
+
+if [[ ! -d $OBJ_DIR ]]; then
+  mkdir -p $OBJ_DIR || exit 3
+
+  curl $QEMU_URL | tar -xj --strip-components=1 -C $OBJ_DIR || err 4
+fi
+
+
+#
+# Build qemu
+#
+
+OBJ_DIR=`pwd`/build/$MACHINE
+OUT_DIR=`pwd`
+
+if [[ ! -d $OBJ_DIR ]]; then
+  (
+    mkdir -p $OBJ_DIR &&
+    cd       $OBJ_DIR || exit 5
+
+    $SRC_DIR/configure --prefix=$OUT_DIR          \
+                       --cpu=$MACHINE             \
+                       --target-list=$TARGET_LIST \
+                       --disable-docs             \
+                       --disable-vnc              \
+                       --enable-sdl               || exit 6
+
+    make -j$JOBS &&
+    make install || exit 7
+  ) #|| err $?
+fi
+
+
+#
+# Pack qemu in a node-gyp compatible way
+#
+
+mkdir -p prebuilds                                                    &&
+tar -cf - bin libexec share | gzip > prebuilds/$PLATFORM-$ARCH.tar.gz || exit 8

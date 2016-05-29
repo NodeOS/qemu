@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+
+MACHINE=i686   npm run build || exit 1
+MACHINE=x86_64 npm run build || exit 2
+
+
+#
+# Upload release to GitHub
+#
+
+if [ "$GITHUB_TOKEN" ]; then
+  prebuild --upload-all $GITHUB_TOKEN || exit 3
+fi
