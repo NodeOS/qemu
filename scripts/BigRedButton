@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
 
-MACHINE=i686   npm run build || exit 1
-MACHINE=x86_64 npm run build || exit 2
+#
+# Generate prebuilds
+#
+
+npm run build || exit 1
+#MACHINE=i686   npm run build || exit 1
+#MACHINE=x86_64 npm run build || exit 2
 
 
 #

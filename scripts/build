@@ -9,8 +9,6 @@ QEMU_VERSION=`node -p "require('./package.json').version"`
 
 QEMU_URL=http://wiki.qemu-project.org/download/qemu-$QEMU_VERSION.tar.bz2
 
-SRC_DIR=`pwd`/deps/qemu
-
 
 if [[ -z $JOBS ]]; then
   JOBS=$((`getconf _NPROCESSORS_ONLN` + 1))
@@ -22,12 +20,14 @@ fi
 case $MACHINE in
   i[345678]86)
     ARCH=ia32
-    CC="$CC -m32"
+#    CC="cc -m32"
+#    CXX="cpp -m32"
   ;;
 
   x86_64)
     ARCH=x64
-    CC="$CC -m64"
+#    CC="cc -m64"
+#    CXX="cpp -m64"
   ;;
 
   *)
@@ -53,24 +53,40 @@ case $OS in
 esac
 
 
+function rmStep(){
+  rm -rf $1
+  rmdir -p --ignore-fail-on-non-empty `dirname $1`
+}
+
 # Clean object dir and return the input error
 function err(){
-  rm -rf $OBJ_DIR
-  rmdir -p --ignore-fail-on-non-empty `dirname $OBJ_DIR`
+  rmStep $STEP_DIR
   exit $1
 }
+
+
+#
+# Define steps paths
+#
+
+SRC_DIR=`pwd`/deps/qemu
+OBJ_DIR=`pwd`/build/$MACHINE
+OUT_DIR=`pwd`
+PREBUILD=`pwd`/prebuilds/$PLATFORM-$ARCH.tar.gz
 
 
 #
 # Download QEmu
 #
 
-OBJ_DIR=$SRC_DIR
+STEP_DIR=$SRC_DIR
 
-if [[ ! -d $OBJ_DIR ]]; then
-  mkdir -p $OBJ_DIR || exit 3
+if [[ ! -d $STEP_DIR ]]; then
+  mkdir -p $STEP_DIR || exit 3
 
-  curl $QEMU_URL | tar -xj --strip-components=1 -C $OBJ_DIR || err 4
+  rmStep $OBJ_DIR
+
+  curl $QEMU_URL | tar -xj --strip-components=1 -C $STEP_DIR || err 4
 fi
 
 
@@ -78,13 +94,14 @@ fi
 # Build qemu
 #
 
-OBJ_DIR=`pwd`/build/$MACHINE
-OUT_DIR=`pwd`
+STEP_DIR=$OBJ_DIR
 
-if [[ ! -d $OBJ_DIR ]]; then
+if [[ ! -d $STEP_DIR ]]; then
   (
-    mkdir -p $OBJ_DIR &&
-    cd       $OBJ_DIR || exit 5
+    mkdir -p $STEP_DIR &&
+    cd       $STEP_DIR || exit 5
+
+    rmStep $PREBUILD
 
     $SRC_DIR/configure --prefix=$OUT_DIR          \
                        --cpu=$MACHINE             \
@@ -95,7 +112,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     make -j$JOBS &&
     make install || exit 7
-  ) #|| err $?
+  ) || err $?
 fi
 
 
@@ -103,5 +120,7 @@ fi
 # Pack qemu in a node-gyp compatible way
 #
 
-mkdir -p prebuilds                                                    &&
-tar -cf - bin libexec share | gzip > prebuilds/$PLATFORM-$ARCH.tar.gz || exit 8
+STEP_DIR=$PREBUILD
+
+mkdir -p prebuilds                             &&
+tar -cf - bin libexec share | gzip > $PREBUILD || err 8
