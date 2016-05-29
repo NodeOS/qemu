@@ -54,8 +54,8 @@ esac
 
 
 function rmStep(){
-  rm -rf $1
-  rmdir -p --ignore-fail-on-non-empty `dirname $1`
+  rm -rf "$@"
+  rmdir -p --ignore-fail-on-non-empty `dirname "$@"`
 }
 
 # Clean object dir and return the input error
@@ -70,9 +70,10 @@ function err(){
 #
 
 SRC_DIR=`pwd`/deps/qemu
-OBJ_DIR=`pwd`/build/$MACHINE
+OBJ_DIR=build/$MACHINE
 OUT_DIR=`pwd`
-PREBUILD=`pwd`/prebuilds/$PLATFORM-$ARCH.tar.gz
+PRODUCTS=(bin libexec share)
+PREBUILD=prebuilds/$PLATFORM-$ARCH.tar.gz
 
 
 #
@@ -97,11 +98,11 @@ fi
 STEP_DIR=$OBJ_DIR
 
 if [[ ! -d $STEP_DIR ]]; then
+  rmStep $PREBUILD ${PRODUCTS[@]} var
+
   (
     mkdir -p $STEP_DIR &&
     cd       $STEP_DIR || exit 5
-
-    rmStep $PREBUILD
 
     $SRC_DIR/configure --prefix=$OUT_DIR          \
                        --cpu=$MACHINE             \
@@ -122,5 +123,5 @@ fi
 
 STEP_DIR=$PREBUILD
 
-mkdir -p prebuilds                             &&
-tar -cf - bin libexec share | gzip > $PREBUILD || err 8
+mkdir -p prebuilds                          &&
+tar -cf - ${PRODUCTS[@]} | gzip > $PREBUILD || err 8
