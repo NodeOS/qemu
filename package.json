@@ -20,7 +20,8 @@
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
     "build": "scripts/build",
-    "install": "prebuild-install -d https://github.com/NodeOS/qemu/releases/download/v{version}/{platform}-{arch}.tar.gz || npm run build"
+    "install": "prebuild-install -d https://github.com/NodeOS/qemu/releases/download/v{version}/{platform}-{arch}.tar.gz || npm run build",
+    "prepublish": "truncate --size 0 bin/*"
   },
   "repository": {
     "type": "git",
