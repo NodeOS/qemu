@@ -15,8 +15,5 @@ if(npm_config_argv && JSON.parse(npm_config_argv).original[0] === 'publish')
   {
     if(err) throw err
 
-    files.forEach(function(file)
-    {
-      fs.truncateSync(TRUNCATE_DIR+'/'+file, 0)
-    })
+    files.forEach(fs.truncateSync.bind(null, TRUNCATE_DIR+'/'+file, 0))
   })

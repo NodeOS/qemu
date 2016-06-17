@@ -107,9 +107,17 @@ if [[ ! -d $STEP_DIR ]]; then
     $SRC_DIR/configure --prefix=$OUT_DIR          \
                        --cpu=$MACHINE             \
                        --target-list=$TARGET_LIST \
+                       --audio-drv-list=alsa      \
+                       --disable-bzip2            \
                        --disable-docs             \
+                       --disable-gcrypt           \
+                       --disable-gnutls           \
+                       --disable-lzo              \
+                       --disable-snappy           \
                        --disable-vnc              \
+                       --disable-xen              \
                        --enable-sdl               || exit 6
+#                       --static                   \
 
     make -j$JOBS &&
     make install || exit 7
