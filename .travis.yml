@@ -1,0 +1,16 @@
+os:
+  - linux
+  - osx
+osx_image: xcode7.3
+sudo: required
+language: node_js
+node_js:
+  - "4.4.6"
+  - "6.2.2"
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glib ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pixman ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo bash install-dependencies.sh ; fi
+script:
+  - npm install
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build ; fi

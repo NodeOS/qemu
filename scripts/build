@@ -2,8 +2,7 @@
 
 set -o pipefail
 
-
-TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu,arm-linux-user,i386-linux-user,x86_64-linux-user
+TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu
 
 QEMU_VERSION=`node -p "require('./package.json').version"`
 
@@ -39,12 +38,35 @@ esac
 
 OS="`uname`"
 case $OS in
-  'Linux')     PLATFORM=linux   ;;
-  'FreeBSD')   PLATFORM=freebsd ;;
-  'WindowsNT') PLATFORM=win     ;;
-  'Darwin')    PLATFORM=mac     ;;
-  'SunOS')     PLATFORM=solaris ;;
-  'AIX')       PLATFORM=linux   ;;
+  'Linux')
+    PLATFORM=linux
+    AUDIO=alsa
+    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
+    DISPLAY=sdl
+    PRODUCTS=(bin libexec share)
+    ;;
+  'FreeBSD')
+    PLATFORM=freebsd
+    ;;
+  'WindowsNT')
+    PLATFORM=win
+    ;;
+  'Darwin')
+    PLATFORM=mac
+    AUDIO=coreaudio
+    DISPLAY=cocoa
+    PRODUCTS=(bin share)
+    ;;
+  'SunOS')
+    PLATFORM=solaris
+    ;;
+  'AIX')
+    PLATFORM=linux
+    AUDIO=alsa
+    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
+    DISPLAY=sdl
+    PRODUCTS=(bin libexec share)
+    ;;
 
   *)
     echo Unknown OS "$OS"
@@ -55,7 +77,6 @@ esac
 
 function rmStep(){
   rm -rf "$@"
-  rmdir -p --ignore-fail-on-non-empty `dirname "$@"`
 }
 
 # Clean object dir and return the input error
@@ -72,7 +93,6 @@ function err(){
 SRC_DIR=`pwd`/deps/qemu
 OBJ_DIR=build/$MACHINE
 OUT_DIR=`pwd`
-PRODUCTS=(bin libexec share)
 PREBUILD=prebuilds/$PLATFORM-$ARCH.tar.gz
 
 
@@ -104,10 +124,11 @@ if [[ ! -d $STEP_DIR ]]; then
     mkdir -p $STEP_DIR &&
     cd       $STEP_DIR || exit 5
 
+
     $SRC_DIR/configure --prefix=$OUT_DIR          \
                        --cpu=$MACHINE             \
                        --target-list=$TARGET_LIST \
-                       --audio-drv-list=alsa      \
+                       --audio-drv-list=$AUDIO    \
                        --disable-bzip2            \
                        --disable-docs             \
                        --disable-gcrypt           \
@@ -116,7 +137,7 @@ if [[ ! -d $STEP_DIR ]]; then
                        --disable-snappy           \
                        --disable-vnc              \
                        --disable-xen              \
-                       --enable-sdl               || exit 6
+                       --enable-$DISPLAY          || exit 6
 #                       --static                   \
 
     make -j$JOBS &&
