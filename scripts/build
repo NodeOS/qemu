@@ -2,6 +2,7 @@
 
 set -o pipefail
 
+TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu
 
 QEMU_VERSION=`node -p "require('./package.json').version"`
 
@@ -40,9 +41,9 @@ case $OS in
   'Linux')
     PLATFORM=linux
     AUDIO=alsa
-    TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu,arm-linux-user,i386-linux-user,x86_64-linux-user
+    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
     DISPLAY=sdl
-    OS_PRODUCTS=(bin libexec share)
+    PRODUCTS=(bin libexec share)
     ;;
   'FreeBSD')
     PLATFORM=freebsd
@@ -53,9 +54,8 @@ case $OS in
   'Darwin')
     PLATFORM=mac
     AUDIO=coreaudio
-    TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu
     DISPLAY=cocoa
-    OS_PRODUCTS=(bin share)
+    PRODUCTS=(bin share)
     ;;
   'SunOS')
     PLATFORM=solaris
@@ -63,9 +63,9 @@ case $OS in
   'AIX')
     PLATFORM=linux
     AUDIO=alsa
-    TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu,arm-linux-user,i386-linux-user,x86_64-linux-user
+    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
     DISPLAY=sdl
-    OS_PRODUCTS=(bin libexec share)
+    PRODUCTS=(bin libexec share)
     ;;
 
   *)
@@ -77,7 +77,6 @@ esac
 
 function rmStep(){
   rm -rf "$@"
-  #rmdir -p --ignore-fail-on-non-empty `dirname "$@"`
 }
 
 # Clean object dir and return the input error
@@ -94,7 +93,6 @@ function err(){
 SRC_DIR=`pwd`/deps/qemu
 OBJ_DIR=build/$MACHINE
 OUT_DIR=`pwd`
-PRODUCTS=$OS_PRODUCTS
 PREBUILD=prebuilds/$PLATFORM-$ARCH.tar.gz
 
 
@@ -139,7 +137,7 @@ if [[ ! -d $STEP_DIR ]]; then
                        --disable-snappy           \
                        --disable-vnc              \
                        --disable-xen              \
-                       --enable-$DISPLAY               || exit 6
+                       --enable-$DISPLAY          || exit 6
 #                       --static                   \
 
     make -j$JOBS &&
