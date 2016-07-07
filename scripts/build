@@ -52,7 +52,7 @@ case $OS in
     PLATFORM=win
     ;;
   'Darwin')
-    PLATFORM=mac
+    PLATFORM=darwin
     AUDIO=coreaudio
     DISPLAY=cocoa
     PRODUCTS=(bin share)
