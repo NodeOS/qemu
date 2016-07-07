@@ -11,5 +11,5 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pixman ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo bash install-dependencies.sh ; fi
 script:
-  - npm install
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build ; fi
+  - npm install --ignore-scripts
+  - npm run build
