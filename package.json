@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/NodeOS/qemu#readme",
   "dependencies": {
-    "prebuild-install": "1.0.2"
+    "prebuild-install": "1.1.0"
   },
   "devDependencies": {
     "prebuild": "^4.2.2"
