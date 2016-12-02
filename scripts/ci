@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]
+then
+  npm run update
+else
+  npm run BigRedButton
+fi

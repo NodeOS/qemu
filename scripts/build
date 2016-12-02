@@ -2,6 +2,7 @@
 
 set -o pipefail
 
+
 TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu
 
 QEMU_VERSION=`node -p "require('./package.json').version"`

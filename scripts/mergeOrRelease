@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+if [ "$SEMAPHORE_TRIGGER_SOURCE" != "scheduler" ] \
+&& [ "$SEMAPHORE_THREAD_RESULT"  != "failed"    ]
+then
+  if [ "$BRANCH_NAME" = "master" ]
+  then
+    ci-publish
+  else
+    buho-merge
+  fi
+fi

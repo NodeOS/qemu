@@ -20,8 +20,11 @@
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
     "build": "scripts/build",
+    "ci": "scripts/ci",
     "install": "prebuild-install -d https://github.com/NodeOS/qemu/releases/download/v{version}/{platform}-{arch}.tar.gz || npm run build",
-    "prepublish": "scripts/prepublish"
+    "mergeOrRelease": "scripts/mergeOrRelease",
+    "prepublish": "scripts/prepublish",
+    "update": "buho-checkUpdate"
   },
   "repository": {
     "type": "git",
@@ -41,9 +44,14 @@
   },
   "homepage": "https://github.com/NodeOS/qemu#readme",
   "dependencies": {
-    "prebuild-install": "1.1.0"
+    "prebuild-install": "^1.1.0"
   },
   "devDependencies": {
-    "prebuild": "^4.2.2"
+    "buho": "^0.2.1",
+    "prebuild": "^4.5.0"
+  },
+  "buho": {
+    "type": "DirectoryIndex",
+    "url": "http://wiki.qemu-project.org/download/"
   }
 }
