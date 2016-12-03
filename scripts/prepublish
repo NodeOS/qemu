@@ -6,6 +6,12 @@ const fs = require('fs')
 const TRUNCATE_DIR = 'bin'
 
 
+function truncateFile(file)
+{
+  fs.truncateSync(TRUNCATE_DIR+'/'+file, 0)
+}
+
+
 // http://stackoverflow.com/a/34597104/586382
 // NPM will run prepublish script after `npm install`
 // (https://docs.npmjs.com/misc/scripts). This ensures that when script is
@@ -16,5 +22,5 @@ if(npm_config_argv && JSON.parse(npm_config_argv).original[0] === 'publish')
   {
     if(err) throw err
 
-    files.forEach(fs.truncateSync.bind(fs, TRUNCATE_DIR+'/'+file, 0))
+    files.forEach(truncateFile)
   })
