@@ -8,7 +8,7 @@
 set -o pipefail
 
 if [[ -f /etc/debian_version ]]; then
-APT='apt-get -qq -y'
+  APT='apt-get -qq -y'
 
   # Update cache
   #dpkg --add-architecture i386  &&

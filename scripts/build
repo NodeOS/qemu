@@ -46,29 +46,34 @@ case $OS in
     TARGET_LIST+=,$TARGET_USER
     DISPLAY=sdl
     PRODUCTS=(bin libexec share)
-    ;;
+  ;;
+
   'FreeBSD')
     PLATFORM=freebsd
-    ;;
+  ;;
+
   'WindowsNT')
     PLATFORM=win
-    ;;
+  ;;
+
   'Darwin')
     PLATFORM=darwin
     AUDIO=coreaudio
     DISPLAY=cocoa
     PRODUCTS=(bin share)
-    ;;
+  ;;
+
   'SunOS')
     PLATFORM=solaris
-    ;;
+  ;;
+
   'AIX')
     PLATFORM=linux
     AUDIO=alsa
     TARGET_LIST+=,$TARGET_USER
     DISPLAY=sdl
     PRODUCTS=(bin libexec share)
-    ;;
+  ;;
 
   *)
     echo Unknown OS "$OS"
