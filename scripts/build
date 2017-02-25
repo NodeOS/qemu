@@ -3,7 +3,8 @@
 set -o pipefail
 
 
-TARGET_LIST=arm-softmmu,i386-softmmu,x86_64-softmmu
+TARGET_LIST=aarch64-softmmu,arm-softmmu,i386-softmmu,x86_64-softmmu
+TARGET_USER=aarch64-linux-user,arm-linux-user,i386-linux-user,x86_64-linux-user
 
 QEMU_VERSION=`node -p "require('./package.json').version"`
 
@@ -42,7 +43,7 @@ case $OS in
   'Linux')
     PLATFORM=linux
     AUDIO=alsa
-    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
+    TARGET_LIST+=,$TARGET_USER
     DISPLAY=sdl
     PRODUCTS=(bin libexec share)
     ;;
@@ -64,7 +65,7 @@ case $OS in
   'AIX')
     PLATFORM=linux
     AUDIO=alsa
-    TARGET_LIST+=,arm-linux-user,i386-linux-user,x86_64-linux-user
+    TARGET_LIST+=,$TARGET_USER
     DISPLAY=sdl
     PRODUCTS=(bin libexec share)
     ;;
