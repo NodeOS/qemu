@@ -55,6 +55,6 @@
   },
   "buho": {
     "type": "DirectoryIndex",
-    "url": "http://wiki.qemu-project.org/download/"
+    "url": "https://download.qemu.org/"
   }
 }
