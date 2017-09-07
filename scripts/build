@@ -138,7 +138,7 @@ if [[ ! -d $STEP_DIR ]]; then
                        --audio-drv-list=$AUDIO    \
                        --disable-bzip2            \
                        --disable-docs             \
-                       --disable-gcrypt           \
+                       --enable-gcrypt            \
                        --disable-gnutls           \
                        --disable-lzo              \
                        --disable-snappy           \
