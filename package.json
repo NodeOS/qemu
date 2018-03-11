@@ -1,6 +1,6 @@
 {
   "name": "qemu",
-  "version": "2.9.0",
+  "version": "2.11.1",
   "description": "QEmu as a npm package for NodeOS",
   "bin": {
     "ivshmem-client": "bin/ivshmem-client",
@@ -21,7 +21,7 @@
   "main": "index.js",
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "build": "scripts/build",
+    "build": "scripts/build.sh",
     "ci": "scripts/ci",
     "install": "prebuild-install -d https://github.com/NodeOS/qemu/releases/download/v{version}/{platform}-{arch}.tar.gz || npm run build",
     "mergeOrRelease": "scripts/mergeOrRelease",
