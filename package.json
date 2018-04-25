@@ -1,6 +1,6 @@
 {
   "name": "qemu",
-  "version": "2.11.1",
+  "version": "2.12.0",
   "description": "QEmu as a npm package for NodeOS",
   "bin": {
     "ivshmem-client": "bin/ivshmem-client",
