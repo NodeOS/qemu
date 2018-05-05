@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/NodeOS/qemu#readme",
   "dependencies": {
-    "prebuild-install": "^3.0.0"
+    "prebuild-install": "^4.0.0"
   },
   "devDependencies": {
     "buho": "^0.3.4",
